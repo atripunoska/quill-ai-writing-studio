@@ -1,26 +1,45 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+@theme {
+  --font-sans: 'Instrument Sans', sans-serif;
+  --font-serif: 'Cormorant Garamond', serif;
+  --font-mono: 'DM Mono', monospace;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  --color-ink: #0e0c0a;
+  --color-ink-soft: #2a2620;
+  --color-ink-muted: #6b6560;
+  --color-ink-ghost: #b8b3ae;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --color-parchment: #f7f4ef;
+  --color-parchment-warm: #f0ebe2;
+  --color-parchment-deep: #e8e0d4;
+
+  --color-quill: #c4a882;
+  --color-quill-bright: #d4b896;
+  --color-quill-deep: #8a7055;
+
+  --color-ai-glow: #7c6eaa;
+  --color-ai-soft: #a896cc;
+  --color-ai-pale: #e8e3f4;
+
+  --color-surface: #faf8f5;
+  --color-surface-raised: #ffffff;
+
+  --color-border: rgba(196, 168, 130, 0.25);
+  --color-border-strong: rgba(196, 168, 130, 0.5);
+
+  --shadow-sm:
+    0 1px 3px rgba(14, 12, 10, 0.06), 0 1px 2px rgba(14, 12, 10, 0.04);
+  --shadow-md:
+    0 4px 16px rgba(14, 12, 10, 0.08), 0 2px 6px rgba(14, 12, 10, 0.04);
+  --shadow-lg:
+    0 12px 40px rgba(14, 12, 10, 0.12), 0 4px 12px rgba(14, 12, 10, 0.06);
+  --shadow-ai:
+    0 0 0 1px rgba(124, 110, 170, 0.2), 0 4px 20px rgba(124, 110, 170, 0.12);
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-surface);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
 }
