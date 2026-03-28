@@ -1,0 +1,13 @@
+'use server';
+
+import { auth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
+import { createDocument } from './documents';
+
+export async function createDocumentAction() {
+  const { userId } = await auth();
+  if (!userId) redirect('/sign-in');
+
+  const doc = await createDocument(userId);
+  redirect(`/editor/${doc.id}`);
+}

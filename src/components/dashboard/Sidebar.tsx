@@ -1,6 +1,7 @@
-import type { Doc } from '@/lib/mock-data';
+import { createDocumentAction } from '@/lib/actions';
+import type { Document } from '@/lib/documents';
 
-export default function Sidebar({ docs }: { docs: Doc[] }) {
+export default function Sidebar({ docs }: { docs: Document[] }) {
   return (
     <aside className='w-60 shrink-0 flex flex-col h-screen bg-parchment-warm border-r border-border'>
       <div className='p-5 border-b border-border'>
@@ -8,9 +9,14 @@ export default function Sidebar({ docs }: { docs: Doc[] }) {
           Quill
           <span className='w-1.5 h-1.5 rounded-full bg-quill inline-block mb-1' />
         </div>
-        <button className='w-full text-sm font-medium font-sans px-4 py-2.5 bg-ink text-parchment rounded cursor-pointer hover:bg-ink-soft transition-colors'>
-          + New Document
-        </button>
+        <form action={createDocumentAction}>
+          <button
+            type='submit'
+            className='w-full text-sm font-medium font-sans px-4 py-2.5 bg-ink text-parchment rounded cursor-pointer hover:bg-ink-soft transition-colors'
+          >
+            + New Document
+          </button>
+        </form>
       </div>
 
       <div className='p-4 border-b border-border'>
@@ -38,7 +44,7 @@ export default function Sidebar({ docs }: { docs: Doc[] }) {
               {doc.title}
             </div>
             <div className='font-mono text-[0.62rem] text-ink-ghost'>
-              {doc.updated}
+              {doc.updated_at.toLocaleDateString()}
             </div>
           </div>
         ))}
