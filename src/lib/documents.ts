@@ -26,3 +26,29 @@ export async function createDocument(userId: string): Promise<Document> {
   `;
   return doc;
 }
+
+export async function getDocument(
+  id: string,
+  userId: string,
+): Promise<Document | null> {
+  const [doc] = await sql<Document[]>`
+    SELECT * FROM documents
+    WHERE id = ${id} AND user_id = ${userId}
+  `;
+  return doc ?? null;
+}
+
+export async function updateDocument(
+  id: string,
+  userId: string,
+  data: { title?: string; content?: string },
+): Promise<void> {
+  await sql`
+    UPDATE documents
+    SET
+      title = COALESCE(${data.title ?? null}, title),
+      content = COALESCE(${data.content ?? null}, content),
+      updated_at = NOW()
+    WHERE id = ${id} AND user_id = ${userId}
+  `;
+}
