@@ -2,30 +2,32 @@
 
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
-import { useCallback, useRef, useState } from 'react';
+import { useCallback, useState } from 'react';
 import type { Document } from '@/lib/documents';
 import { updateDocumentAction } from '@/lib/actions';
+import { useAutosave } from '@/hooks/useAutosave';
 import AIPanel from './AIPanel';
+import { useDocumentStore } from '@/stores/useDocumentStore';
 
 export default function Editor({ doc }: { doc: Document }) {
   const [title, setTitle] = useState(doc.title);
-  const [saveStatus, setSaveStatus] = useState<'saved' | 'saving' | 'unsaved'>(
-    'saved',
-  );
-  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const save = useCallback(
-    (data: { title?: string; content?: string }) => {
-      if (debounceTimer.current) clearTimeout(debounceTimer.current);
-      setSaveStatus('unsaved');
-      debounceTimer.current = setTimeout(async () => {
-        setSaveStatus('saving');
-        await updateDocumentAction(doc.id, data);
-        setSaveStatus('saved');
-      }, 1000);
+  const { setTitle: setStoreTitle, setContent } = useDocumentStore();
+
+  function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setTitle(e.target.value);
+    setStoreTitle(e.target.value);
+    save({ title: e.target.value });
+  }
+
+  const saveFn = useCallback(
+    async (data: { title?: string; content?: string }) => {
+      await updateDocumentAction(doc.id, data);
     },
     [doc.id],
   );
+
+  const { status, save } = useAutosave(saveFn);
 
   const editor = useEditor({
     extensions: [StarterKit],
@@ -38,18 +40,21 @@ export default function Editor({ doc }: { doc: Document }) {
       },
     },
     onUpdate: ({ editor }) => {
+      setContent(editor.getHTML());
       save({ content: editor.getHTML() });
     },
   });
 
-  function handleTitleChange(e: React.ChangeEvent<HTMLInputElement>) {
-    setTitle(e.target.value);
-    save({ title: e.target.value });
-  }
+  const saveLabel =
+    status === 'saving'
+      ? 'Saving...'
+      : status === 'saved'
+        ? 'Saved'
+        : 'Unsaved';
+
   return (
     <div className='flex h-full'>
       <div className='flex flex-col flex-1 overflow-hidden'>
-        {/* Topbar */}
         <div className='h-12 border-b border-border bg-surface-raised flex items-center px-6 gap-3 shrink-0'>
           <button
             onClick={() => editor?.chain().focus().toggleBold().run()}
@@ -83,11 +88,7 @@ export default function Editor({ doc }: { doc: Document }) {
           </button>
           <div className='ml-auto flex items-center gap-4'>
             <span className='font-mono text-[0.62rem] text-ink-ghost'>
-              {saveStatus === 'saving'
-                ? 'Saving...'
-                : saveStatus === 'saved'
-                  ? 'Saved'
-                  : 'Unsaved'}
+              {saveLabel}
             </span>
             <span className='font-mono text-[0.62rem] text-ink-ghost'>
               {title}
@@ -95,7 +96,6 @@ export default function Editor({ doc }: { doc: Document }) {
           </div>
         </div>
 
-        {/* Editor area */}
         <div className='flex-1 overflow-y-auto px-24 py-16'>
           <input
             value={title}

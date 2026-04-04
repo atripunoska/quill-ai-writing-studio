@@ -1,21 +1,19 @@
 'use client';
 
-import { useState } from 'react';
+import type { Editor } from '@tiptap/react';
 import SuggestTab from './SuggestTab';
 import RewriteTab from './RewriteTab';
 import CoachTab from './CoachTab';
-import { Editor } from '@tiptap/react';
+import { useAIStore } from '@/stores/useAIStore';
 
-type Tab = 'suggest' | 'rewrite' | 'coach';
-
-const tabs: { id: Tab; label: string }[] = [
-  { id: 'suggest', label: 'Suggest' },
-  { id: 'rewrite', label: 'Rewrite' },
-  { id: 'coach', label: 'Coach' },
+const tabs = [
+  { id: 'suggest' as const, label: 'Suggest' },
+  { id: 'rewrite' as const, label: 'Rewrite' },
+  { id: 'coach' as const, label: 'Coach' },
 ];
 
 export default function AIPanel({ editor }: { editor: Editor | null }) {
-  const [activeTab, setActiveTab] = useState<Tab>('suggest');
+  const { activeTab, setActiveTab } = useAIStore();
 
   return (
     <aside className='w-72 shrink-0 flex flex-col border-l border-border bg-surface h-full'>

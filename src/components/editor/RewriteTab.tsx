@@ -2,49 +2,29 @@
 
 import { useState } from 'react';
 import type { Editor } from '@tiptap/react';
-
+import { useStream } from '@/hooks/useStream';
+import { getRewritePrompt } from '@/lib/ai/prompts';
 import { REWRITE_TONES } from '@/lib/constants';
 
 export default function RewriteTab({ editor }: { editor: Editor | null }) {
   const [activeTone, setActiveTone] = useState('Professional');
-  const [output, setOutput] = useState('');
-  const [loading, setLoading] = useState(false);
+  const { output, status, start, cancel, reset } = useStream();
 
   async function handleRewrite() {
     if (!editor) return;
     const selection = editor.state.selection;
     const text = editor.state.doc.textBetween(selection.from, selection.to);
-
     if (!text.trim()) return;
-
-    setLoading(true);
-    setOutput('');
-
-    const res = await fetch('/api/stream', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        prompt: `Rewrite the following text in a ${activeTone.toLowerCase()} tone. Return only the rewritten text, no explanation.\n\n${text}`,
-      }),
-    });
-
-    const reader = res.body!.getReader();
-    const decoder = new TextDecoder();
-
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      setOutput((prev) => prev + decoder.decode(value));
-    }
-
-    setLoading(false);
+    await start(getRewritePrompt(text, activeTone));
   }
 
   function handleInsert() {
     if (!editor || !output) return;
     editor.chain().focus().insertContent(output).run();
-    setOutput('');
+    reset();
   }
+
+  const isStreaming = status === 'streaming';
 
   return (
     <div className='flex flex-col gap-3'>
@@ -66,13 +46,23 @@ export default function RewriteTab({ editor }: { editor: Editor | null }) {
           </button>
         ))}
       </div>
-      <button
-        onClick={handleRewrite}
-        disabled={loading || !editor}
-        className='w-full text-sm font-medium py-2 bg-ai-glow text-white rounded cursor-pointer hover:bg-ai-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
-      >
-        {loading ? 'Rewriting...' : 'Rewrite Selection'}
-      </button>
+      <div className='flex gap-2'>
+        <button
+          onClick={handleRewrite}
+          disabled={isStreaming || !editor}
+          className='flex-1 text-sm font-medium py-2 bg-ai-glow text-white rounded cursor-pointer hover:bg-ai-soft transition-colors disabled:opacity-50 disabled:cursor-not-allowed'
+        >
+          {isStreaming ? 'Rewriting...' : 'Rewrite Selection'}
+        </button>
+        {isStreaming && (
+          <button
+            onClick={cancel}
+            className='text-sm font-medium px-3 py-2 border border-border rounded cursor-pointer hover:border-border-strong transition-colors text-ink-muted'
+          >
+            Cancel
+          </button>
+        )}
+      </div>
       <div className='min-h-16 rounded border border-border bg-surface-raised p-3'>
         {output ? (
           <>
