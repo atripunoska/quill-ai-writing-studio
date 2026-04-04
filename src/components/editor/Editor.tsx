@@ -8,6 +8,7 @@ import { updateDocumentAction } from '@/lib/actions';
 import { useAutosave } from '@/hooks/useAutosave';
 import AIPanel from './AIPanel';
 import { useDocumentStore } from '@/stores/useDocumentStore';
+import Link from 'next/link';
 
 export default function Editor({ doc }: { doc: Document }) {
   const [title, setTitle] = useState(doc.title);
@@ -56,6 +57,13 @@ export default function Editor({ doc }: { doc: Document }) {
     <div className='flex h-full'>
       <div className='flex flex-col flex-1 overflow-hidden'>
         <div className='h-12 border-b border-border bg-surface-raised flex items-center px-6 gap-3 shrink-0'>
+          <Link
+            href='/dashboard'
+            className='font-mono text-[0.62rem] text-ink-ghost hover:text-ink transition-colors mr-2'
+          >
+            ← Dashboard
+          </Link>
+
           <button
             onClick={() => editor?.chain().focus().toggleBold().run()}
             disabled={!editor}

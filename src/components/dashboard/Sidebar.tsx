@@ -1,5 +1,6 @@
-import { createDocumentAction } from '@/lib/actions';
+import Link from 'next/link';
 import type { Document } from '@/lib/documents';
+import { createDocumentAction } from '@/lib/actions';
 
 export default function Sidebar({ docs }: { docs: Document[] }) {
   return (
@@ -32,21 +33,22 @@ export default function Sidebar({ docs }: { docs: Document[] }) {
 
       <div className='flex-1 overflow-y-auto'>
         {docs.map((doc, i) => (
-          <div
-            key={doc.id}
-            className={`px-5 py-3 cursor-pointer border-l-2 transition-all ${
-              i === 0
-                ? 'border-quill bg-quill/10'
-                : 'border-transparent hover:bg-quill/5'
-            }`}
-          >
-            <div className='text-sm font-medium text-ink truncate mb-0.5'>
-              {doc.title}
+          <Link key={doc.id} href={`/editor/${doc.id}`}>
+            <div
+              className={`px-5 py-3 cursor-pointer border-l-2 transition-all ${
+                i === 0
+                  ? 'border-quill bg-quill/10'
+                  : 'border-transparent hover:bg-quill/5'
+              }`}
+            >
+              <div className='text-sm font-medium text-ink truncate mb-0.5'>
+                {doc.title}
+              </div>
+              <div className='font-mono text-[0.62rem] text-ink-ghost'>
+                {doc.updated_at.toLocaleDateString()}
+              </div>
             </div>
-            <div className='font-mono text-[0.62rem] text-ink-ghost'>
-              {doc.updated_at.toLocaleDateString()}
-            </div>
-          </div>
+          </Link>
         ))}
       </div>
 
