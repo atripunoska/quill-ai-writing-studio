@@ -52,3 +52,25 @@ export async function updateDocument(
     WHERE id = ${id} AND user_id = ${userId}
   `;
 }
+
+export async function deleteDocument(
+  id: string,
+  userId: string,
+): Promise<void> {
+  await sql`
+    DELETE FROM documents
+    WHERE id = ${id} AND user_id = ${userId}
+  `;
+}
+
+export async function renameDocument(
+  id: string,
+  userId: string,
+  title: string,
+): Promise<void> {
+  await sql`
+    UPDATE documents
+    SET title = ${title}, updated_at = NOW()
+    WHERE id = ${id} AND user_id = ${userId}
+  `;
+}

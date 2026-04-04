@@ -1,8 +1,17 @@
+'use client';
+
 import Link from 'next/link';
+import { useState } from 'react';
 import type { Document } from '@/lib/documents';
 import { createDocumentAction } from '@/lib/actions';
 
 export default function Sidebar({ docs }: { docs: Document[] }) {
+  const [search, setSearch] = useState('');
+
+  const filtered = docs.filter((doc) =>
+    doc.title.toLowerCase().includes(search.toLowerCase()),
+  );
+
   return (
     <aside className='w-60 shrink-0 flex flex-col h-screen bg-parchment-warm border-r border-border'>
       <div className='p-5 border-b border-border'>
@@ -23,33 +32,41 @@ export default function Sidebar({ docs }: { docs: Document[] }) {
       <div className='p-4 border-b border-border'>
         <input
           placeholder='Search documents...'
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
           className='w-full px-3 py-2 text-sm font-sans bg-surface-raised border border-border rounded text-ink placeholder:text-ink-ghost outline-none focus:border-quill transition-colors'
         />
       </div>
 
       <div className='px-5 pt-4 pb-2 font-mono text-[0.6rem] tracking-widest uppercase text-ink-ghost'>
-        Recent
+        {search ? `${filtered.length} results` : 'Recent'}
       </div>
 
       <div className='flex-1 overflow-y-auto'>
-        {docs.map((doc, i) => (
-          <Link key={doc.id} href={`/editor/${doc.id}`}>
-            <div
-              className={`px-5 py-3 cursor-pointer border-l-2 transition-all ${
-                i === 0
-                  ? 'border-quill bg-quill/10'
-                  : 'border-transparent hover:bg-quill/5'
-              }`}
-            >
-              <div className='text-sm font-medium text-ink truncate mb-0.5'>
-                {doc.title}
+        {filtered.length === 0 ? (
+          <div className='px-5 py-4 text-sm text-ink-ghost'>
+            No documents found
+          </div>
+        ) : (
+          filtered.map((doc, i) => (
+            <Link key={doc.id} href={`/editor/${doc.id}`}>
+              <div
+                className={`px-5 py-3 cursor-pointer border-l-2 transition-all ${
+                  i === 0 && !search
+                    ? 'border-quill bg-quill/10'
+                    : 'border-transparent hover:bg-quill/5'
+                }`}
+              >
+                <div className='text-sm font-medium text-ink truncate mb-0.5'>
+                  {doc.title}
+                </div>
+                <div className='font-mono text-[0.62rem] text-ink-ghost'>
+                  {doc.updated_at.toLocaleDateString()}
+                </div>
               </div>
-              <div className='font-mono text-[0.62rem] text-ink-ghost'>
-                {doc.updated_at.toLocaleDateString()}
-              </div>
-            </div>
-          </Link>
-        ))}
+            </Link>
+          ))
+        )}
       </div>
 
       <div className='p-4 border-t border-border'>

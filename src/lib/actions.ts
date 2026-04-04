@@ -2,7 +2,13 @@
 
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
-import { createDocument, updateDocument } from './documents';
+import {
+  createDocument,
+  deleteDocument,
+  renameDocument,
+  updateDocument,
+} from './documents';
+import { revalidatePath } from 'next/cache';
 
 export async function createDocumentAction() {
   const { userId } = await auth();
@@ -20,4 +26,20 @@ export async function updateDocumentAction(
   if (!userId) redirect('/sign-in');
 
   await updateDocument(id, userId, data);
+}
+
+export async function deleteDocumentAction(id: string) {
+  const { userId } = await auth();
+  if (!userId) redirect('/sign-in');
+
+  await deleteDocument(id, userId);
+  revalidatePath('/dashboard');
+}
+
+export async function renameDocumentAction(id: string, title: string) {
+  const { userId } = await auth();
+  if (!userId) redirect('/sign-in');
+
+  await renameDocument(id, userId, title);
+  revalidatePath('/dashboard');
 }
