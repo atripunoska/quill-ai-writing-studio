@@ -4,13 +4,22 @@ import Link from 'next/link';
 import { useState } from 'react';
 import type { Document } from '@/lib/documents';
 import { createDocumentAction } from '@/lib/actions';
+import { SignOutButton, useUser } from '@clerk/nextjs';
 
 export default function Sidebar({ docs }: { docs: Document[] }) {
   const [search, setSearch] = useState('');
 
+  const { user } = useUser();
+
   const filtered = docs.filter((doc) =>
     doc.title.toLowerCase().includes(search.toLowerCase()),
   );
+
+  const initials =
+    [user?.firstName?.[0], user?.lastName?.[0]]
+      .filter(Boolean)
+      .join('')
+      .toUpperCase() || 'U';
 
   return (
     <aside className='w-60 shrink-0 flex flex-col h-screen bg-parchment-warm border-r border-border'>
@@ -68,19 +77,24 @@ export default function Sidebar({ docs }: { docs: Document[] }) {
           ))
         )}
       </div>
-
       <div className='p-4 border-t border-border'>
-        <Link href='/settings'>
-          <div className='flex items-center gap-2.5 cursor-pointer hover:opacity-80 transition-opacity'>
-            <div className='w-8 h-8 rounded-full bg-gradient-to-br from-quill to-ai-glow flex items-center justify-center text-xs font-semibold text-white shrink-0'>
-              U
-            </div>
-            <div>
-              <div className='text-sm font-medium text-ink'>My Account</div>
-              <div className='text-[0.68rem] text-ink-ghost'>Settings</div>
-            </div>
+        <Link
+          href='/settings'
+          className='flex items-center gap-2.5 hover:opacity-80 transition-opacity mb-3'
+        >
+          <div className='w-8 h-8 rounded-full bg-gradient-to-br from-quill to-ai-glow flex items-center justify-center text-xs font-semibold text-white shrink-0'>
+            {initials}
+          </div>
+          <div>
+            <div className='text-sm font-medium text-ink'>My Account</div>
+            <div className='text-[0.68rem] text-ink-ghost'>Settings</div>
           </div>
         </Link>
+        <SignOutButton>
+          <button className='w-full text-left font-mono text-[0.62rem] tracking-widest uppercase text-ink-ghost hover:text-danger transition-colors cursor-pointer'>
+            Sign out
+          </button>
+        </SignOutButton>
       </div>
     </aside>
   );

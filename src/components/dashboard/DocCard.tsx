@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import type { Document } from '@/lib/documents';
-import { getRelativeTime, getWordCount } from '@/lib/utils';
+import { getRelativeTime, getWordCount, stripHtml } from '@/lib/utils';
 import { deleteDocumentAction, renameDocumentAction } from '@/lib/actions';
 
 export default function DocCard({ doc }: { doc: Document }) {
@@ -65,7 +65,9 @@ export default function DocCard({ doc }: { doc: Document }) {
 
       <Link href={`/editor/${doc.id}`} className='block'>
         <p className='text-sm leading-relaxed text-ink-muted mb-5 line-clamp-3'>
-          {doc.content || 'Start writing something amazing...'}
+          {doc.content
+            ? stripHtml(doc.content)
+            : 'Start writing something amazing...'}
         </p>
         <div className='flex items-center justify-between'>
           <span className='font-mono text-[0.62rem] text-ink-ghost'>

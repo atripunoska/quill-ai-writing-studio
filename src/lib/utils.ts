@@ -14,3 +14,9 @@ export function getRelativeTime(date: Date): string {
 export function getWordCount(content: string): number {
   return content.trim().split(/\s+/).filter(Boolean).length;
 }
+export function stripHtml(html: string): string {
+  return html
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}

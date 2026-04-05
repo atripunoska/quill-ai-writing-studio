@@ -12,8 +12,12 @@ export default async function DashboardPage() {
 
   return (
     <div className='flex h-screen bg-surface font-sans'>
-      <Sidebar docs={docs} />
-      <main className='flex-1 overflow-y-auto p-10'>
+      {/* Sidebar — hidden on mobile */}
+      <div className='hidden md:block'>
+        <Sidebar docs={docs} />
+      </div>
+
+      <main className='flex-1 overflow-y-auto p-5 md:p-10'>
         <DocsList docs={docs} />
       </main>
     </div>

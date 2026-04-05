@@ -9,6 +9,8 @@ import { useAutosave } from '@/hooks/useAutosave';
 import AIPanel from './AIPanel';
 import { useDocumentStore } from '@/stores/useDocumentStore';
 import Link from 'next/link';
+import { SignOutButton } from '@clerk/nextjs';
+import { getWordCount } from '@/lib/utils';
 
 export default function Editor({ doc }: { doc: Document }) {
   const [title, setTitle] = useState(doc.title);
@@ -52,6 +54,14 @@ export default function Editor({ doc }: { doc: Document }) {
       : status === 'saved'
         ? 'Saved'
         : 'Unsaved';
+
+  const wordCount = getWordCount(editor?.getText() ?? doc.content);
+  const readingTime = Math.ceil(wordCount / 200);
+  const createdDate = new Intl.DateTimeFormat('en-US', {
+    month: 'long',
+    day: 'numeric',
+    year: 'numeric',
+  }).format(new Date(doc.created_at));
 
   return (
     <div className='flex h-full'>
@@ -100,22 +110,38 @@ export default function Editor({ doc }: { doc: Document }) {
             </span>
             <span className='font-mono text-[0.62rem] text-ink-ghost'>
               {title}
-            </span>
+            </span>{' '}
+            <SignOutButton>
+              <button className='font-mono text-[0.62rem] tracking-widest uppercase text-ink-ghost hover:text-danger transition-colors cursor-pointer'>
+                Sign out
+              </button>
+            </SignOutButton>
           </div>
         </div>
 
-        <div className='flex-1 overflow-y-auto px-24 py-16'>
-          <input
-            value={title}
-            onChange={handleTitleChange}
-            placeholder='Untitled'
-            className='w-full font-serif text-4xl font-light text-ink bg-transparent outline-none mb-8 placeholder:text-ink-ghost'
-          />
-          <EditorContent editor={editor} className='min-h-96' />
+        <div className='flex-1 overflow-y-auto'>
+          <div className='max-w-2xl mx-auto px-6 py-16'>
+            <input
+              value={title}
+              onChange={handleTitleChange}
+              placeholder='Untitled'
+              className='w-full font-serif text-4xl md:text-5xl font-light text-ink bg-transparent outline-none mb-4 placeholder:text-ink-ghost'
+            />
+            <div className='flex items-center gap-2 font-mono text-[0.65rem] tracking-widest uppercase text-ink-ghost mb-6 pb-6 border-b border-border'>
+              <span>Created {createdDate}</span>
+              <span>·</span>
+              <span>{wordCount} words</span>
+              <span>·</span>
+              <span>~{readingTime} min read</span>
+            </div>
+            <EditorContent editor={editor} className='min-h-96' />
+          </div>
         </div>
       </div>
 
-      <AIPanel editor={editor} />
+      <div className='hidden md:block h-full'>
+        <AIPanel editor={editor} />
+      </div>
     </div>
   );
 }

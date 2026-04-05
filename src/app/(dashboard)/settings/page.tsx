@@ -1,6 +1,7 @@
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import Link from 'next/link';
+import { SignOutButton } from '@clerk/nextjs';
 import SettingsProfile from '@/components/settings/SettingsProfile';
 import SettingsDangerZone from '@/components/settings/SettingsDangerZone';
 
@@ -11,9 +12,9 @@ export default async function SettingsPage() {
   const user = await currentUser();
 
   return (
-    <div className='flex h-screen bg-surface font-sans'>
-      {/* Settings sidebar */}
-      <aside className='w-60 shrink-0 flex flex-col h-screen bg-parchment-warm border-r border-border'>
+    <div className='flex flex-col md:flex-row h-screen bg-surface font-sans'>
+      {/* Settings sidebar — hidden on mobile */}
+      <aside className='hidden md:flex w-60 shrink-0 flex-col h-screen bg-parchment-warm border-r border-border'>
         <div className='p-5 border-b border-border'>
           <Link
             href='/dashboard'
@@ -56,11 +57,31 @@ export default async function SettingsPage() {
       </aside>
 
       {/* Main content */}
-      <main className='flex-1 overflow-y-auto p-10 max-w-2xl'>
+      <main className='flex-1 overflow-y-auto p-5 md:p-10 max-w-2xl'>
+        {/* Mobile header */}
+        <div className='flex items-center justify-between mb-8 md:hidden'>
+          <Link
+            href='/dashboard'
+            className='font-mono text-[0.62rem] tracking-widest uppercase text-ink-ghost hover:text-ink transition-colors'
+          >
+            ← Dashboard
+          </Link>
+          <SignOutButton>
+            <button className='font-mono text-[0.62rem] tracking-widest uppercase text-danger cursor-pointer'>
+              Sign out
+            </button>
+          </SignOutButton>
+        </div>
+
         <SettingsProfile
           name={user?.fullName ?? ''}
           email={user?.emailAddresses[0]?.emailAddress ?? ''}
-          initials={user?.firstName?.[0] ?? 'U'}
+          initials={
+            [user?.firstName?.[0], user?.lastName?.[0]]
+              .filter(Boolean)
+              .join('')
+              .toUpperCase() || 'U'
+          }
         />
         <div className='border-t border-border my-10' />
         <SettingsDangerZone />
