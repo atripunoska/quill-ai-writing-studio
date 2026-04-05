@@ -70,15 +70,17 @@ export default function Sidebar({ docs }: { docs: Document[] }) {
       </div>
 
       <div className='p-4 border-t border-border'>
-        <div className='flex items-center gap-2.5 cursor-pointer'>
-          <div className='w-8 h-8 rounded-full bg-gradient-to-br from-quill to-ai-glow flex items-center justify-center text-xs font-semibold text-white shrink-0'>
-            U
+        <Link href='/settings'>
+          <div className='flex items-center gap-2.5 cursor-pointer hover:opacity-80 transition-opacity'>
+            <div className='w-8 h-8 rounded-full bg-gradient-to-br from-quill to-ai-glow flex items-center justify-center text-xs font-semibold text-white shrink-0'>
+              U
+            </div>
+            <div>
+              <div className='text-sm font-medium text-ink'>My Account</div>
+              <div className='text-[0.68rem] text-ink-ghost'>Settings</div>
+            </div>
           </div>
-          <div>
-            <div className='text-sm font-medium text-ink'>My Account</div>
-            <div className='text-[0.68rem] text-ink-ghost'>Settings</div>
-          </div>
-        </div>
+        </Link>
       </div>
     </aside>
   );

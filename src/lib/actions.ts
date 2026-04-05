@@ -1,6 +1,6 @@
 'use server';
 
-import { auth } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import {
   createDocument,
@@ -9,6 +9,7 @@ import {
   updateDocument,
 } from './documents';
 import { revalidatePath } from 'next/cache';
+import sql from './db';
 
 export async function createDocumentAction() {
   const { userId } = await auth();
@@ -42,4 +43,29 @@ export async function renameDocumentAction(id: string, title: string) {
 
   await renameDocument(id, userId, title);
   revalidatePath('/dashboard');
+}
+
+export async function deleteAccountAction() {
+  const { userId } = await auth();
+  if (!userId) return;
+
+  await sql`DELETE FROM documents WHERE user_id = ${userId}`;
+
+  const clerk = await clerkClient();
+  await clerk.users.deleteUser(userId);
+}
+
+export async function updateDisplayNameAction(formData: FormData) {
+  const { userId } = await auth();
+  if (!userId) redirect('/sign-in');
+
+  const name = formData.get('name') as string;
+  if (!name?.trim()) return;
+
+  const [firstName, ...rest] = name.trim().split(' ');
+  const lastName = rest.join(' ');
+
+  const clerk = await clerkClient();
+  await clerk.users.updateUser(userId, { firstName, lastName });
+  revalidatePath('/settings');
 }
