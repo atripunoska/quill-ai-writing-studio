@@ -55,12 +55,12 @@ export default function DocCard({ doc }: { doc: Document }) {
           className='w-full font-serif text-xl font-medium text-ink bg-transparent border-b border-quill outline-none mb-2'
         />
       ) : (
-        <h3
+        <h2
           className='font-serif text-xl font-medium text-ink mb-2 cursor-text'
           onClick={() => setIsEditing(true)}
         >
           {title}
-        </h3>
+        </h2>
       )}
 
       <Link href={`/editor/${doc.id}`} className='block'>
