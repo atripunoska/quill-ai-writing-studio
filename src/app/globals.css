@@ -111,3 +111,106 @@ body {
   position: relative;
   z-index: 1;
 }
+/* AI Panel */
+.ai-streaming-output {
+  background: var(--color-ai-pale);
+  border: 1px solid rgba(124, 110, 170, 0.2);
+  border-radius: 4px;
+  padding: 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1rem;
+  line-height: 1.8;
+  color: var(--color-ink);
+  margin-top: 1rem;
+}
+
+.rewrite-comparison {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+.compare-box {
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.compare-box.original {
+  background: var(--color-parchment-deep);
+  border: 1px solid var(--color-border);
+  color: var(--color-ink-muted);
+}
+
+.compare-box.rewritten {
+  background: var(--color-ai-pale);
+  border: 1px solid rgba(124, 110, 170, 0.2);
+  color: var(--color-ink);
+}
+
+.compare-label {
+  font-family: 'DM Mono', monospace;
+  font-size: 0.6rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+.compare-label.orig {
+  color: var(--color-ink-ghost);
+}
+.compare-label.new {
+  color: var(--color-ai-glow);
+}
+
+.ai-output-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+.btn-insert {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.9rem;
+  background: var(--color-ink);
+  color: var(--color-parchment);
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif;
+  font-weight: 500;
+  transition: all 0.15s;
+}
+
+.btn-insert:hover {
+  background: var(--color-ink-soft);
+}
+
+.btn-dismiss {
+  font-size: 0.75rem;
+  padding: 0.4rem 0.9rem;
+  background: transparent;
+  color: var(--color-ink-muted);
+  border: 1px solid var(--color-border);
+  border-radius: 3px;
+  cursor: pointer;
+  font-family: 'Instrument Sans', sans-serif;
+  transition: all 0.15s;
+}
+
+.rewrite-selection-box {
+  background: var(--color-parchment-deep);
+  border: 1px dashed var(--color-border-strong);
+  border-radius: 4px;
+  padding: 0.85rem;
+  margin-bottom: 1rem;
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 0.95rem;
+  line-height: 1.7;
+  color: var(--color-ink-muted);
+  font-style: italic;
+}

@@ -42,7 +42,7 @@ export default function AIPanel({ editor }: { editor: Editor | null }) {
       </div>
 
       <div className='flex-1 overflow-y-auto p-4'>
-        {activeTab === 'suggest' && <SuggestTab />}
+        {activeTab === 'suggest' && <SuggestTab editor={editor} />}
         {activeTab === 'rewrite' && <RewriteTab editor={editor} />}
         {activeTab === 'coach' && <CoachTab editor={editor} />}
       </div>
