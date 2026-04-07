@@ -23,8 +23,11 @@ export default function RootLayout({
             rel='stylesheet'
           />
         </head>{' '}
-        <Analytics />
-        <body className='bg-surface text-ink font-sans'>{children}</body>{' '}
+        <body className='bg-surface text-ink font-sans'>
+          {' '}
+          <Analytics />
+          {children}
+        </body>{' '}
       </html>
     </ClerkProvider>
   );
